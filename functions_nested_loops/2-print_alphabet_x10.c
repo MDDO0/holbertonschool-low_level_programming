@@ -1,6 +1,6 @@
 #include "main.h"
 /**
- * print_alphabet - Prints the alphabet in lowercase
+ * print_alphabet_x10 - Prints the alphabet in lowercase
  *
  * Description: This function prints times 10 times all lowercase letters
  * from 'a' to 'z' using `_putchar` and adds a new line at the end.
