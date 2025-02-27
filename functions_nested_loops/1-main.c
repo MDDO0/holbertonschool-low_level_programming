@@ -6,6 +6,6 @@
  */
 int main(void)
 {
-print_alphabet();  // استدعاء الدالة
+print_alphabet();
 return (0);
 }
