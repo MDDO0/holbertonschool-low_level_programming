@@ -2,9 +2,7 @@
 
 /**
  * puts2 - Prints every other character of a string
- * @str: Pointer to the string
- *
- * Return: void
+ * @str: Pointer to the input string
  */
 void puts2(char *str)
 {
