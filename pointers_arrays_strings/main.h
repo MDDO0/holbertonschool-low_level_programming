@@ -2,6 +2,6 @@
 #define MAIN_H
 
 int _putchar(char c);
-void puts2(char *str);
+char *_strcat(char *dest, char *src);
 
 #endif
