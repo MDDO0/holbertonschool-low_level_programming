@@ -1,8 +1,6 @@
 #ifndef LISTS_H
 #define LISTS_H
 
-size_t list_len(const list_t *h);
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
