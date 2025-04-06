@@ -3,6 +3,22 @@
 #include "lists.h"
 
 /**
+ * _strlen - calculates the length of a string
+ * @s: input string
+ *
+ * Return: length of the string
+ */
+unsigned int _strlen(const char *s)
+{
+	unsigned int len = 0;
+
+	while (s[len] != '\0')
+		len++;
+
+	return (len);
+}
+
+/**
  * add_node - adds a new node at the beginning of a list_t list
  * @head: pointer to the pointer of the head of the list
  * @str: string to be duplicated and added to the list
@@ -27,7 +43,7 @@ list_t *add_node(list_t **head, const char *str)
 		return (NULL);
 	}
 
-	new_node->len = strlen(str);
+	new_node->len = _strlen(str);
 	new_node->next = *head;
 	*head = new_node;
 
