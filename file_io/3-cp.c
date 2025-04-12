@@ -9,7 +9,7 @@
  * @ac: argument count
  * @av: argument vector
  *
- * Return: 0 on success, exits with codes on failure
+ * Return: 0 on success, exits with error codes on failure
  */
 int main(int ac, char **av)
 {
@@ -72,6 +72,7 @@ int main(int ac, char **av)
 		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from);
 		exit(100);
 	}
+
 	if (close(fd_to) == -1)
 	{
 		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
