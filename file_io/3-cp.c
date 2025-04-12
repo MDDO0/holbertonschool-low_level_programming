@@ -4,17 +4,48 @@
 
 #define BUF_SIZE 1024
 
+void close_fd(int fd);
+int open_source(const char *filename);
+int open_dest(const char *filename);
+void copy_file(int fd_from, int fd_to, char *buffer, ssize_t first_read);
+
 /**
- * close_fd - Closes a file descriptor and handles error
- * @fd: The file descriptor
+ * main - Entry point: copies content of file_from to file_to
+ * @ac: Argument count
+ * @av: Argument vector
+ *
+ * Return: 0 on success, exits with error codes on failure
  */
-void close_fd(int fd)
+int main(int ac, char **av)
 {
-	if (close(fd) == -1)
+	int fd_from, fd_to;
+	ssize_t first_read;
+	char buffer[BUF_SIZE];
+
+	if (ac != 3)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
-		exit(100);
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		exit(97);
 	}
+
+	fd_from = open_source(av[1]);
+
+	first_read = read(fd_from, buffer, BUF_SIZE);
+	if (first_read == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
+		close_fd(fd_from);
+		exit(98);
+	}
+
+	fd_to = open_dest(av[2]);
+
+	copy_file(fd_from, fd_to, buffer, first_read);
+
+	close_fd(fd_from);
+	close_fd(fd_to);
+
+	return (0);
 }
 
 /**
@@ -56,12 +87,12 @@ int open_dest(const char *filename)
  * @fd_from: Source file descriptor
  * @fd_to: Destination file descriptor
  * @buffer: Buffer to use
+ * @first_read: First chunk already read
  */
-void copy_file(int fd_from, int fd_to, char *buffer)
+void copy_file(int fd_from, int fd_to, char *buffer, ssize_t first_read)
 {
-	ssize_t rd, wr;
+	ssize_t rd = first_read, wr;
 
-	rd = read(fd_from, buffer, BUF_SIZE);
 	while (rd > 0)
 	{
 		wr = write(fd_to, buffer, rd);
@@ -73,42 +104,25 @@ void copy_file(int fd_from, int fd_to, char *buffer)
 			exit(99);
 		}
 		rd = read(fd_from, buffer, BUF_SIZE);
-	}
-
-	if (rd == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from fd\n");
-		close_fd(fd_from);
-		close_fd(fd_to);
-		exit(98);
+		if (rd == -1)
+		{
+			dprintf(STDERR_FILENO, "Error: Can't read from fd\n");
+			close_fd(fd_from);
+			close_fd(fd_to);
+			exit(98);
+		}
 	}
 }
 
 /**
- * main - Entry point: copies content of file_from to file_to
- * @ac: Argument count
- * @av: Argument vector
- *
- * Return: 0 on success, exits with error codes on failure
+ * close_fd - Closes a file descriptor and handles error
+ * @fd: The file descriptor
  */
-int main(int ac, char **av)
+void close_fd(int fd)
 {
-	int fd_from, fd_to;
-	char buffer[BUF_SIZE];
-
-	if (ac != 3)
+	if (close(fd) == -1)
 	{
-		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-		exit(97);
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
+		exit(100);
 	}
-
-	fd_from = open_source(av[1]);
-	fd_to = open_dest(av[2]);
-
-	copy_file(fd_from, fd_to, buffer);
-
-	close_fd(fd_from);
-	close_fd(fd_to);
-
-	return (0);
 }
